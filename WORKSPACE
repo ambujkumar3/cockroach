@@ -15,19 +15,11 @@ workspace(
 # Load the things that let us load other things.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# Load go bazel tools. This gives us access to the go bazel SDK/toolchains.
-http_archive(
+local_repository(
     name = "io_bazel_rules_go",
-    sha256 = "f02f82e74033ea42cf81da4319b9f8e0d4c5fa49346537267bba84053dc68ceb",
-    strip_prefix = "cockroachdb-rules_go-993120e",
-    urls = [
-        # cockroachdb/rules_go as of 993120ee175025d8556a4dd8bec330e6c4b9ac13
-        # (upstream release-0.37 plus a few patches).
-        "https://storage.googleapis.com/public-bazel-artifacts/bazel/cockroachdb-rules_go-v0.27.0-240-g993120e.tar.gz",
-    ],
+    path = "/usr/local/rules_go",
 )
 
-# Like the above, but for nodeJS.
 http_archive(
     name = "build_bazel_rules_nodejs",
     sha256 = "7f3f747db3f924547b9ffdf86da6c604335ad95e09d4e5a69fdcfdb505099421",
@@ -167,19 +159,6 @@ load(
 
 # To point to a mirrored artifact, use:
 #
-go_download_sdk(
-    name = "go_sdk",
-    sdks = {
-        "darwin_amd64": ("go1.19.4.darwin-amd64.tar.gz", "6fa1e9087b36fba65625869c885ca9c6f1db734306d8e74836b212248c20d55d"),
-        "darwin_arm64": ("go1.19.4.darwin-arm64.tar.gz", "bb3bc5d7655b9637cfe2b5e90055dee93b0ead50e2ffd091df320d1af1ca853f"),
-        "freebsd_amd64": ("go1.19.4.freebsd-amd64.tar.gz", "84489ebb63f1757b79574d7345c647bd40bc6414cecb868c93e24476c2d2b9b6"),
-        "linux_amd64": ("go1.19.4.linux-amd64.tar.gz", "e52774e4d6a0bb5bcc5a0f1d11e337929de826b40c99c408283b8854336d9dc4"),
-        "linux_arm64": ("go1.19.4.linux-arm64.tar.gz", "8bb193126fea46dca70658b7916b458a22fddb8e37d6deb463f14e10d6f06552"),
-        "windows_amd64": ("go1.19.4.windows-amd64.tar.gz", "ced538537d190c03e6e4bffb3b60049794d70f09af7900bd8419b44245b2b5dc"),
-    },
-    urls = ["https://storage.googleapis.com/public-bazel-artifacts/go/20221219-000617/{}"],
-    version = "1.19.4",
-)
 
 # To point to a local SDK path, use the following instead. We'll call the
 # directory into which you cloned the Go repository $GODIR[1]. You'll have to
@@ -191,6 +170,11 @@ go_download_sdk(
 #       name = "go_sdk",
 #       path = "<path to $GODIR>",
 #   )
+
+go_local_sdk(
+    name = "go_sdk",
+    path = "/usr/local/go",
+)
 
 # To use your whatever your local SDK is, use the following instead:
 #
@@ -594,6 +578,7 @@ register_toolchains(
     "//build/toolchains:cross_arm64_linux_toolchain",
     "//build/toolchains:cross_arm64_linux_arm_toolchain",
     "//build/toolchains:cross_arm64_s390x_toolchain",
+    "//build/toolchains:cross_ppc_linux_toolchain",
     "//build/toolchains:cross_arm64_windows_toolchain",
     "//build/toolchains:cross_arm64_macos_toolchain",
     "//build/toolchains:cross_arm64_macos_arm_toolchain",

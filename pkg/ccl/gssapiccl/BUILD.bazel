@@ -20,7 +20,7 @@ go_library(
         # NB: On Ubuntu, res_nsearch is found in the resolv_wrapper library,
         # found in the libresolv-wrapper package.
         "//build/toolchains:is_dev_linux": ["-ldl -lresolv -lresolv_wrapper"],
-        "@io_bazel_rules_go//go/platform:linux": ["-ldl -lresolv"],
+        "@io_bazel_rules_go//go/platform:linux": ["-ldl -lresolv -lkeyutils"],
         "//conditions:default": [],
     }),
     importpath = "github.com/cockroachdb/cockroach/pkg/ccl/gssapiccl",
